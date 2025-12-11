@@ -8,7 +8,7 @@ export const config = {
     indexName: process.env.PINECONE_INDEX_NAME || "rag-index",
     cloud: process.env.PINECONE_CLOUD || "aws",
     region: process.env.PINECONE_REGION || "us-east-1",
-    dimension: 768, // BAAI/llm-embedder dimension
+    dimension: 384, // all-MiniLM-L6-v2 dimension (must match embedding.dimension)
   },
 
   // Model Settings
