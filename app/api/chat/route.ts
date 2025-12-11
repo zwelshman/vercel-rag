@@ -64,11 +64,13 @@ export async function POST(request: NextRequest) {
 
     // Search for relevant documents
     let sources: SearchResult[] = [];
+    let searchError: string | null = null;
     try {
       sources = await searchDocuments(message, config.retrieval.topK);
     } catch (error) {
       console.error("Search error:", error);
-      // Continue without sources if search fails
+      searchError = error instanceof Error ? error.message : "Search failed";
+      // Continue without sources if search fails, but log for debugging
     }
 
     // Build context from sources
@@ -119,11 +121,16 @@ Please answer based on the context provided above. If the context doesn't contai
         metadata: s.metadata,
         score: s.score,
       })),
+      ...(searchError && process.env.NODE_ENV === "development" && { searchError }),
     });
   } catch (error) {
     console.error("Chat API error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to process request" },
+      {
+        error: "Failed to process request",
+        details: process.env.NODE_ENV === "development" ? errorMessage : undefined
+      },
       { status: 500 }
     );
   }
