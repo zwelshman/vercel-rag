@@ -3,15 +3,15 @@
  * Uses a lightweight model suitable for Vercel Edge functions
  */
 
-import { pipeline, Pipeline } from "@xenova/transformers";
+import { pipeline, FeatureExtractionPipeline } from "@xenova/transformers";
 
 // Singleton pattern for embedding pipeline
-let embeddingPipeline: Pipeline | null = null;
+let embeddingPipeline: FeatureExtractionPipeline | null = null;
 
 /**
  * Get or create the embedding pipeline
  */
-async function getEmbeddingPipeline(): Promise<Pipeline> {
+async function getEmbeddingPipeline(): Promise<FeatureExtractionPipeline> {
   if (!embeddingPipeline) {
     embeddingPipeline = await pipeline(
       "feature-extraction",
